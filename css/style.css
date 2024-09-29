@@ -1,0 +1,130 @@
+#roulette {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 10px solid #000;
+    position: relative;
+    margin: 20px auto;
+    transition: transform 5s ease; /* Cambia el tiempo para ajustar la duración del giro */
+}
+
+#green, #red, #black {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    top: 0;
+}
+
+#green {
+    background-color: green;
+    left: 25%;
+    border-radius: 100% 100% 0 0; /* Ajustar el borde para el verde */
+}
+
+#red {
+    background-color: red;
+    left: 0;
+    border-radius: 100% 0 0 0; /* Ajustar el borde para el rojo */
+}
+
+#black {
+    background-color: black;
+    right: 0;
+    border-radius: 0 100% 0 0; /* Ajustar el borde para el negro */
+}
+
+#result {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 24px;
+}
+
+.back-button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #01060c;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    width: 100px;
+}
+
+.back-button:hover {
+    background-color: #020e1b;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    text-align: center;
+    color: #007bff;
+}
+
+.form-container, .table-container {
+    margin: 20px 0;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.submit-button {
+    background-color: #080c11;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.submit-button:hover {
+    background-color: #0e345ea2;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #00080f;
+    color: white;
+}
+
+.action-link {
+    color: #05101d;
+    text-decoration: none;
+}
+
+.action-link:hover {
+    text-decoration: underline;
+}
