@@ -1,0 +1,31 @@
+.roulette {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(green 0deg 120deg, red 120deg 240deg, black 240deg 360deg);
+    position: relative;
+    border: 5px solid #000;
+    margin: 20px auto;
+    animation: spin 2s ease-out;
+}
+
+.arrow {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid #000;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

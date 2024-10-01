@@ -18,7 +18,7 @@ if (isset($_GET['id'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     editPlayer($id, $name, $player['money']);
-    header('Location: ../index.php'); // Redirigir después de editar
+    header('Location: ../gestion.php'); // Redirigir después de editar
 }
 ?>
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" name="name" value="<?php echo $player['name']; ?>" required>
         <button type="submit">Guardar Cambios</button>
     </form>
-    <a href="../index.php">Volver</a>
+    <a href="../gestion.php">Volver</a>
 </body>
 </html>
 

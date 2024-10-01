@@ -23,7 +23,7 @@ function getPlayerById($id) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// Editar un jugador
+// Editar un jugador (actualizar su saldo y nombre)
 function editPlayer($id, $name, $money) {
     global $pdo;
     $stmt = $pdo->prepare("UPDATE players SET name = :name, money = :money WHERE id = :id");
@@ -37,27 +37,27 @@ function deletePlayer($id) {
     $stmt->execute(['id' => $id]);
 }
 
+// Agregar saldo a un jugador
 function addBalanceToPlayer($id, $amount) {
     global $pdo;
     
-    // Asegurarse de que el monto es un número positivo
     if ($amount <= 0) {
         return "El monto debe ser mayor que 0.";
     }
     
-    // Obtener el saldo actual del jugador
     $player = getPlayerById($id);
     if (!$player) {
         return "Jugador no encontrado.";
     }
 
-    // Sumar el saldo al dinero actual
     $newBalance = $player['money'] + $amount;
 
-    // Actualizar el saldo en la base de datos
     $stmt = $pdo->prepare("UPDATE players SET money = :money WHERE id = :id");
     $stmt->execute(['money' => $newBalance, 'id' => $id]);
 
     return "El saldo ha sido actualizado. Nuevo saldo: $" . number_format($newBalance, 2);
 }
+
+
 ?>
+

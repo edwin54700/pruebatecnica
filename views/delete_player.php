@@ -13,7 +13,7 @@ if (isset($_GET['id'])) {
 
     // Eliminar jugador
     deletePlayer($id);
-    header('Location: ../index.php'); // Redirigir después de eliminar
+    header('Location: ../gestion.php'); // Redirigir después de eliminar
 } else {
     echo "ID de jugador no proporcionado.";
     exit;

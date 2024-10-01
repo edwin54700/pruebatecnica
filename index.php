@@ -1,120 +1,131 @@
 <?php
-include 'includes/db.php'; // Asegúrate de que esta ruta sea correcta
-include 'includes/functions.php'; // Asegúrate de que esta ruta sea correcta
+include_once 'includes/db.php'; // Incluir la conexión PDO
+include_once 'includes/functions.php'; // Incluir funciones
 
-$message = ""; // Para almacenar mensajes de retroalimentación
+$players = getPlayers(); // Obtener todos los jugadores
 
-// Verificar si se ha enviado un formulario para agregar un jugador
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['name'])) {
-    // Agregar el nuevo jugador con un saldo inicial de 10,000
-    addPlayer($_POST['name'], 10000); // Asegúrate de que la función addPlayer acepte dos parámetros
+// Función para simular el giro de la ruleta
+function spinRoulette() {
+    // Definir las probabilidades
+    $random = rand(1, 100); // Generar un número aleatorio entre 1 y 100
 
-    // Redirigir para evitar la duplicación de datos al recargar
-    header("Location: index.php?success=player_added");
-    exit();
-}
-
-// Verificar si se ha enviado un formulario para agregar saldo
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'], $_POST['amount'])) {
-    $player_id = $_POST['player_id'];
-    $amount = $_POST['amount'];
-    
-    // Asegurarse de que el monto es positivo
-    if ($amount > 0) {
-        // Llamar a la función para agregar saldo
-        $message = addBalanceToPlayer($player_id, $amount); // Asegúrate de que la función esté implementada
+    // Determinar el color basado en las probabilidades
+    if ($random <= 2) {
+        return 'Verde'; // 2% de probabilidad
+    } elseif ($random <= 51) {
+        return 'Rojo'; // 49% de probabilidad
     } else {
-        $message = "El monto debe ser mayor que 0.";
+        return 'Negro'; // 49% de probabilidad
     }
-
-    // Redirigir para evitar la duplicación de datos al recargar
-    header("Location: index.php?success=balance_added");
-    exit();
 }
 
-// Obtener la lista de jugadores
-$players = getPlayers();
+// Simular el giro de la ruleta una vez
+$result = spinRoulette(); 
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplicación de Apuestas</title>
-    <link rel="stylesheet" href="css/style.css"> <!-- Asegúrate de que esta ruta sea correcta -->
+    <title>Apuesta Automática para Todos los Jugadores</title>
+    <link rel="stylesheet" href="css/style.css"> <!-- Asegúrate de que la ruta del CSS sea correcta -->
+    <link rel="stylesheet" href="css/style_roulette.css"> <!-- Asegúrate de que la ruta del CSS para la ruleta sea correcta -->
 </head>
 <body>
-    <div class="container">
-        <h1>Aplicación de Apuestas</h1>
+    <h1>Resultados de la Ruleta para Todos los Jugadores</h1>
 
-        <!-- Mostrar mensaje de éxito si es necesario -->
-        <?php if (isset($_GET['success']) && $_GET['success'] == 'player_added'): ?>
-            <p class="success-message">Jugador agregado correctamente.</p>
-        <?php elseif (isset($_GET['success']) && $_GET['success'] == 'balance_added'): ?>
-            <p class="success-message">Saldo agregado correctamente.</p>
-        <?php endif; ?>
-
-        <!-- Formulario para agregar un nuevo jugador -->
-        <div class="form-container">
-            <h2>Agregar Jugador</h2>
-            <form action="" method="post">
-                <input type="text" name="name" required placeholder="Nombre del Jugador" class="input-field">
-                <button type="submit" class="submit-button">Agregar Jugador</button>
-            </form>
-        </div>
-
-        <!-- Tabla de jugadores -->
-        <div class="table-container">
-            <h2>Lista de Jugadores</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Dinero</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($players as $player): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($player['id']); ?></td>
-                        <td><?php echo htmlspecialchars($player['name']); ?></td>
-                        <td><?php echo number_format($player['money'], 2); ?></td>
-                        <td>
-                            <a href="views/edit_player.php?id=<?php echo $player['id']; ?>" class="action-link">Editar</a>
-                            <a href="views/delete_player.php?id=<?php echo $player['id']; ?>" class="action-link">Eliminar</a>
-                            <a href="views/roulette.php?id=<?php echo $player['id']; ?>" class="action-link">Apostar</a>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Formulario para agregar saldo a un jugador -->
-        <div class="form-container">
-            <h2>Agregar Saldo a Jugador</h2>
-            <form action="" method="post">
-                <label for="player_id">Seleccionar Jugador:</label>
-                <select name="player_id" id="player_id" required>
-                    <?php foreach ($players as $player): ?>
-                        <option value="<?php echo $player['id']; ?>">
-                            <?php echo htmlspecialchars($player['name']); ?> (Saldo: $<?php echo number_format($player['money'], 2); ?>)
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                
-                <label for="amount">Monto a agregar:</label>
-                <input type="number" id="amount" name="amount" min="1" step="0.01" required placeholder="Monto en COP">
-
-                <button type="submit" class="submit-button">Agregar Saldo</button>
-            </form>
-            <?php if (!empty($message)) : ?>
-                <p><?php echo $message; ?></p>
-            <?php endif; ?>
-        </div>
+    <div class="roulette" id="roulette">
+        <div class="arrow"></div> <!-- Flecha que señala el resultado -->
     </div>
+
+    <div class="result" id="roulette-result"></div>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Dinero Inicial</th>
+                <th>Porcentaje Apostado</th>
+                <th>Apuesta</th>
+                <th>Color Apostado</th>
+                <th>Resultado</th>
+                <th>Ganancia/Pérdida</th>
+                <th>Dinero Final</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($players as $player): ?>
+                <?php
+                    // Inicializar variables para la apuesta
+                    $initialMoney = $player['money'];
+
+                    // Verificar si el jugador tiene saldo para apostar
+                    if ($initialMoney <= 1000) {
+                        echo "<tr>
+                                <td>" . htmlspecialchars($player['name']) . "</td>
+                                <td>$" . number_format($initialMoney, 2) . "</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>No puede apostar, recargue saldo</td>
+                                <td>-</td>
+                                <td>$" . number_format($initialMoney, 2) . "</td>
+                              </tr>";
+                        continue; // Pasar al siguiente jugador
+                    }
+
+                    $percentage = rand(8, 15); // Apuesta entre el 8% y 15%
+                    $bet = ($percentage / 100) * $initialMoney;
+
+                    // Asignar un color aleatorio basado en las probabilidades
+                    $color = '';
+                    $random = rand(1, 100); // Generar un número aleatorio entre 1 y 100
+                    if ($random <= 2) {
+                        $color = 'Verde'; // 2% de probabilidad
+                    } elseif ($random <= 51) {
+                        $color = 'Rojo'; // 49% de probabilidad
+                    } else {
+                        $color = 'Negro'; // 49% de probabilidad
+                    }
+
+                    // Usar el resultado de la ruleta para calcular ganancias/pérdidas
+                    $gainOrLoss = 0; // Inicializar ganancia/pérdida
+                    if ($result === $color) {
+                        if ($color === 'Verde') {
+                            $gainOrLoss = $bet * 15; // Ganancia para Verde
+                        } else {
+                            $gainOrLoss = $bet * 2; // Ganancia para Rojo o Negro
+                        }
+                    } else {
+                        $gainOrLoss = -$bet; // Pérdida de la apuesta
+                    }
+                    $finalMoney = $initialMoney + $gainOrLoss; // Dinero final del jugador
+
+                    // Actualizar el saldo del jugador en la base de datos
+                    editPlayer($player['id'], $player['name'], $finalMoney);
+                ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($player['name']); ?></td>
+                    <td>$<?php echo number_format($initialMoney, 2); ?></td>
+                    <td><?php echo $percentage; ?>%</td>
+                    <td>$<?php echo number_format($bet, 2); ?></td>
+                    <td><?php echo $color; ?></td>
+                    <td><?php echo $result; ?></td>
+                    <td>$<?php echo number_format($gainOrLoss, 2); ?></td>
+                    <td>$<?php echo number_format($finalMoney, 2); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <a class="back-button" href="gestion.php">Gestionar jugadores</a>
+
+    <script>
+        // Mostrar el resultado de la ruleta
+        const resultDiv = document.getElementById('roulette-result');
+        const finalResult = "<?php echo $result; ?>"; // Obtener el resultado final de PHP
+        resultDiv.innerText = "Resultado de la Ruleta: " + finalResult;
+    </script>
 </body>
 </html>
+
